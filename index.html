@@ -20,9 +20,9 @@
 		<div class="wrapper">
 			<div class="container">
 				<header class="header row">
-					<div class="span12">
+					<div class="span9">
 						<h1>Bower components</h1>
-						<h2>Discover <a href="http://twitter.github.com/bower/">Bower</a> components</h2>
+						<h2>Discover <a href="http://bower.io">Bower</a> components</h2>
 					</div>
 				</header>
 				<hr>
@@ -30,7 +30,9 @@
 					<div id="loading">
 						<p>Loading components...</p>
 					</div>
-					<div id="components" class="row"></div>
+					<div class="row components1"></div>
+					<div id="components" class="row components3"></div>
+					<div class="row components2"></div>
 				</section>
 			</div>
 			<div class="push"></div>
@@ -38,7 +40,12 @@
 		<footer class="credit">
 			<div class="container">
 				<p class="about">Bower is a package manager for the web.<br>Components are self-contained packages of different kinds of assets, but most often JavaScript.</p>
-				<div class=""><a href="http://twitter.com/sindresorhus"><img src="http://gravatar.com/avatar/d36a92237c75c5337c17b60d90686bf9.png?s=300" width="150" height="150" alt="Sindre Sorhus"></a></div>
+				<div class="profile" itemscope itemtype="http://schema.org/Person">
+					<div class="name" itemprop="name"><span>Sindre</span><span>Sorhus</span></div>
+					<a href="http://sindresorhus.com">
+						<img src="http://gravatar.com/avatar/d36a92237c75c5337c17b60d90686bf9.png?s=300" width="150" height="150" alt="Sindre Sorhus" itemprop="image">
+					</a>
+				</div>
 				<a href="https://twitter.com/sindresorhus" class="twitter-follow-button" data-show-count="false">Follow @sindresorhus</a>
 				<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 			</div>
@@ -50,7 +57,7 @@
 			<dl class="dl-horizontal">
 				<% _.each(components, function (el) { %>
 					<dt><a title="<%- el.description %>" href="<%- el.website %>"><%- el.name %></a></dt>
-					<dd title="<%- el.description %>"><p><%= el.description ? _.escape(el.description) : '&nbsp;' %></p></dd>
+					<dd title="<%- el.description %>"><p class="component-desc"><%= el.description ? _.escape(el.description) : '&nbsp;' %></p></dd>
 				<% }); %>
 			</dl>
 		</div>
@@ -81,15 +88,18 @@
 						<td class="updated"><time datetime="<%- el.updated %>"><%- el.updated %></time></td>
 						<td class="forks"><%- el.forks %></td>
 						<td class="stars"><%- el.stars %></td>
+						<td class="keywords hidden"><%- _.isArray(el.keywords) ? el.keywords.join(' ') : '' %></td>
 					</tr>
 				<% }); %>
 			</tbody>
 		</table>
+		<div class="clearfix"></div>
 		<div class="row pagination pagination-large pagination-centered">
 			<ul class="paging"></ul>
 		</div>
 		<div class="message hide row" id="search-notfound">No matching components found. Take a deep breath and try something else.</div>
 	</script>​
+	<script src="featured-list.js"></script>
 	<script src="dist/main.js"></script>
 	<script>var _gaq=[['_setAccount','UA-25562592-3'],['_trackPageview']];(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'))</script>
 </html>

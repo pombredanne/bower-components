@@ -1,19 +1,34 @@
-/*global jQuery, _, List */
+/*global jQuery, _, List, featuredList */
 (function ($) {
 	'use strict';
 
-	var API_URL = 'http://bower-component-list.herokuapp.com';
+	var API_URL = 'https://bower-component-list.herokuapp.com';
+
+	function shuffle(array) {
+		var tmp, current, top = array.length;
+
+		if (top) while(--top) {
+			current = Math.floor(Math.random() * (top + 1));
+			tmp = array[current];
+			array[current] = array[top];
+			array[top] = tmp;
+		}
+
+		return array;
+	}
 
 	function render(data) {
 		var listInit = true;
 
 		var sortedByCreated = _.sortBy(data, function (el) {
 			return -Date.parse(el.created);
+		}).filter(function (el) {
+			return el.description && el.description.trim() !== '';
 		});
 
-		var latestTpl = _.template($('#components-small-template').html(), {
-			title: 'Latest components',
-			components: sortedByCreated.slice(0, 5)
+		var featuredTpl = _.template($('#components-small-template').html(), {
+			title: 'Featured components',
+			components: featuredList
 		});
 
 		var hotTpl = _.template($('#components-small-template').html(), {
@@ -23,6 +38,16 @@
 			}).slice(0, 5)
 		});
 
+		var latestTpl = _.template($('#components-small-template').html(), {
+			title: 'Latest components',
+			components: sortedByCreated.slice(0, 5)
+		});
+
+		var randomTpl = _.template($('#components-small-template').html(), {
+			title: 'Random components',
+			components: shuffle(sortedByCreated).slice(0, 5)
+		});
+
 		var componentsTpl = _.template($('#components-template').html(), {
 			components: _.sortBy(data, function (el) {
 				return -el.stars;
@@ -30,11 +55,9 @@
 		});
 
 		$('#loading').hide();
-		$('#components')
-			.append(latestTpl)
-			.append(hotTpl)
-			.append(componentsTpl)
-			.find('.search').show();
+		$('.components1').append(featuredTpl).append(hotTpl);
+		$('.components2').append(latestTpl).append(randomTpl);
+		$('.components3').append(componentsTpl).find('.search').show();
 
 		var list = new List('components', {
 			valueNames: [
@@ -44,7 +67,8 @@
 				'created',
 				'updated',
 				'forks',
-				'stars'
+				'stars',
+				'keywords'
 			],
 			page: 10,
 			indexAsync: true,
@@ -85,13 +109,17 @@
 						pageBtns.filter('.next').click();
 					}
 				});
+			} else {
+				// update hash on search
+				var query = $.trim($('.search').val());
+				window.location.hash = query === '' ? '' : '#!/search/' + query;
 			}
 
 			$('.table thead').toggle(list.matchingItems.length !== 0);
 			$('#search-notfound').toggle(list.matchingItems.length === 0);
 		});
 
-		$('.credit img').on('mouseover mouseout', function (e) {
+		$('.profile img').on('mouseover mouseout', function (e) {
 			$(this).toggleClass('animated tada', e.type === 'mouseover');
 		});
 	}
